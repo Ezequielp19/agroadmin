@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Detalle de Computadora</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/computadora"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="computadora; else loading">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Manuales</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <input type="file" (change)="onFileSelected($event, 'manuales')" />
+        <ion-list>
+          <ion-item *ngFor="let archivo of manualesArchivos">
+            <ion-label>{{ archivo.nombre }}</ion-label>
+            <ion-button (click)="onDeleteArchivo(archivo, 'manuales')" color="danger">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Planos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <input type="file" (change)="onFileSelected($event, 'planos')" />
+        <ion-list>
+          <ion-item *ngFor="let archivo of planosArchivos">
+            <ion-label>{{ archivo.nombre }}</ion-label>
+            <ion-button (click)="onDeleteArchivo(archivo, 'planos')" color="danger">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Otros</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <input type="file" (change)="onFileSelected($event, 'otros')" />
+        <ion-list>
+          <ion-item *ngFor="let archivo of otrosArchivos">
+            <ion-label>{{ archivo.nombre }}</ion-label>
+            <ion-button (click)="onDeleteArchivo(archivo, 'otros')" color="danger">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Videos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="input-container">
+          <input class="custom-input" type="text" placeholder="Ingrese Nombre" [(ngModel)]="newVideoNombre" />
+          <input class="custom-input" type="text" placeholder="Ingrese URL" [(ngModel)]="newVideoUrl" />
+          <ion-button class="custom-button" (click)="onAddUrl('videos')" color="primary">Agregar</ion-button>
+        </div>
+        <ion-list>
+          <ion-item *ngFor="let item of videosArchivos">
+            <ion-label class="item-label">
+              <strong>{{ item.nombre }}</strong> - {{ item.url }}
+            </ion-label>
+            <ion-button (click)="onDeleteArchivo(item, 'videos')" color="danger">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Software</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="input-container">
+          <input class="custom-input" type="text" placeholder="Ingrese Nombre" [(ngModel)]="newSoftwareNombre" />
+          <input class="custom-input" type="text" placeholder="Ingrese URL" [(ngModel)]="newSoftwareUrl" />
+          <ion-button class="custom-button" (click)="onAddUrl('software')" color="primary">Agregar</ion-button>
+        </div>
+        <ion-list>
+          <ion-item *ngFor="let item of softwareArchivos">
+            <ion-label class="item-label">
+              <strong>{{ item.nombre }}</strong> - {{ item.url }}
+            </ion-label>
+            <ion-button (click)="onDeleteArchivo(item, 'software')" color="danger">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+
+  <ng-template #loading>
+    <ion-spinner></ion-spinner>
+    <p>Cargando detalles de la computadora...</p>
+  </ng-template>
+</ion-content>

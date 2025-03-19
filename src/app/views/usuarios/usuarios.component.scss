@@ -1,0 +1,98 @@
+ion-content {
+  .product-list {
+    margin: 0;
+    padding: 0;
+  }
+
+  ion-grid {
+    width: 100%;
+    max-width: 100%;
+    margin: auto;
+    overflow-x: auto;
+
+    ion-row {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+
+      ion-col {
+        padding: 10px;
+        text-align: center;
+        &:first-of-type {
+          text-align: left;
+        }
+      }
+    }
+  }
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #ffffff;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Ajuste general de los filtros */
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+
+  label {
+    font-size: 1.1rem;
+    color: #000000; /* Texto blanco */
+    margin-bottom: 0.8rem; /* Espaciado mayor con el input */
+    font-weight: 500; /* Hacer que los labels sean más visibles */
+  }
+
+  .input-normal {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 1rem;
+    color: #ffffff; /* Texto blanco */
+    background-color: #000000; /* Fondo negro */
+    border: 1px solid #ffffff; /* Borde blanco */
+    border-radius: 6px; /* Esquinas redondeadas */
+    outline: none;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: #00ffcc; /* Resaltar en verde claro al enfocarse */
+    }
+
+    ::placeholder {
+      color: #b0b0b0; /* Placeholder gris claro */
+    }
+  }
+
+  select.input-normal {
+    -webkit-appearance: none; /* Eliminar estilo predeterminado en navegadores */
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #000000; /* Fondo negro */
+    color: #ffffff; /* Texto blanco */
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    padding: 0.6rem;
+  }
+}
