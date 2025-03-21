@@ -128,21 +128,26 @@ async updatePrecios(nuevosPrecios: { consultas: number; suscripciones: number; c
 }
 
 
-  // 🔹 Método para eliminar archivos de Cloudflare R2
-  async deleteFromR2(path: string): Promise<void> {
-    try {
-      const params = {
-        Bucket: this.BUCKET_NAME,
-        Key: path,
-      };
-
-      await this.s3.deleteObject(params).promise();
-      console.log('Archivo eliminado de R2:', path);
-    } catch (error) {
-      console.error('Error eliminando archivo de R2:', error);
-      throw error;
+// 🔹 Método para eliminar archivos de Cloudflare R2
+async deleteFromR2(path: string): Promise<void> {
+  try {
+    if (!path) {
+      throw new Error('El parámetro "path" es null o undefined.');
     }
+
+    const params = {
+      Bucket: this.BUCKET_NAME,
+      Key: path,
+    };
+
+    await this.s3.deleteObject(params).promise();
+    console.log('Archivo eliminado de R2:', path);
+  } catch (error) {
+    console.error('Error eliminando archivo de R2:', error);
+    throw error;
   }
+}
+
 
   // 🔹 Obtener todas las computadoras ordenadas por nombre
   async getComputadoras(): Promise<Computadoras[]> {
@@ -202,27 +207,35 @@ async updatePrecios(nuevosPrecios: { consultas: number; suscripciones: number; c
     }
   }
 
-  // 🔹 Eliminar una computadora y su imagen de R2
-  async deleteComputadora(computadora: Computadoras): Promise<void> {
-    try {
-      if (!computadora || !computadora.id) {
-        throw new Error('La computadora o el id de la computadora es null o undefined.');
-      }
+// 🔹 Eliminar una computadora y su imagen de R2
+async deleteComputadora(computadora: Computadoras): Promise<void> {
+  try {
+    if (!computadora || !computadora.id) {
+      throw new Error('La computadora o el id de la computadora es null o undefined.');
+    }
 
-      if (computadora.imagen) {
-        const imagePath = computadora.imagen.split('.com/')[1];
+    // Verifica si la imagen existe y contiene el patrón esperado
+    if (computadora.imagen) {
+      const imagePath = computadora.imagen.includes('.com/')
+        ? computadora.imagen.split('.com/')[1]
+        : null; // Extrae la clave del archivo o asigna null
+
+      if (!imagePath) {
+        console.warn('La URL de la imagen no contiene el patrón esperado. Saltando eliminación de la imagen.');
+      } else {
         await this.deleteFromR2(imagePath);
       }
-
-      const computadoraRef = doc(this.firestore, 'computadoras', computadora.id);
-      await deleteDoc(computadoraRef);
-
-      console.log(`Computadora eliminada: ${computadora.id}`);
-    } catch (error) {
-      console.error('Error eliminando la computadora:', error);
-      throw error;
     }
+
+    const computadoraRef = doc(this.firestore, 'computadoras', computadora.id);
+    await deleteDoc(computadoraRef);
+
+    console.log(`Computadora eliminada: ${computadora.id}`);
+  } catch (error) {
+    console.error('Error eliminando la computadora:', error);
+    throw error;
   }
+}
 
   async addUrlToSection(computadoraId: string, seccion: string, nombre: string, url: string): Promise<void> {
     try {
@@ -429,6 +442,19 @@ async deleteIMGFromR2(filePath: string) {
         throw error;
     }
 }
+
+
+async updateConsultaManual(id: string, data: Partial<ConsultaI>): Promise<void> {
+  try {
+    const consultaRef = doc(this.firestore, 'consultasManual', id);
+    await updateDoc(consultaRef, data);
+    console.log(`Consulta actualizada: ${id}`, data);
+  } catch (error) {
+    console.error('Error actualizando consulta:', error);
+    throw error;
+  }
+}
+
 
 
   async deleteConsultaManual(id: string): Promise<void> {

@@ -118,26 +118,58 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-
-
-    <!-- Tabla de Consultas Manuales -->
     <ion-row class="header-row">
       <ion-col size="2"><strong>DNI</strong></ion-col>
       <ion-col size="2"><strong>Nombre</strong></ion-col>
-      <ion-col size="4"><strong>Email</strong></ion-col>
+      <ion-col size="3"><strong>Email</strong></ion-col>
       <ion-col size="2"><strong>Teléfono</strong></ion-col>
-      <ion-col size="2"><strong>Fecha Creación</strong></ion-col>
+      <ion-col size="2"><strong>Fecha</strong></ion-col>
+      <ion-col size="1"><strong>Comentario</strong></ion-col>
     </ion-row>
+
     <ng-container *ngFor="let consulta of consultasFiltradas">
       <ion-row>
         <ion-col size="2">{{ consulta.dni }}</ion-col>
         <ion-col size="2">{{ consulta.nombre }}</ion-col>
-        <ion-col size="4">{{ consulta.email }}</ion-col>
+        <ion-col size="3">{{ consulta.email }}</ion-col>
         <ion-col size="2">{{ consulta.telefono }}</ion-col>
         <ion-col size="2">{{ consulta.fechaFormateada }}</ion-col>
+        <ion-col size="1">
+          <ion-button (click)="abrirModalComentario(consulta)" color="secondary">
+            Ver
+          </ion-button>
+        </ion-col>
       </ion-row>
     </ng-container>
-
-
   </ion-grid>
+
 </ion-content>
+
+
+<!-- Modal de Comentario -->
+<ion-modal [isOpen]="modalOpen" (didDismiss)="cerrarModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Agregar Comentario</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="modal-content">
+        <label for="comentario">Comentario:</label>
+        <input
+          id="comentario"
+          [(ngModel)]="comentario"
+          class="custom-input"
+          placeholder="Escribe un comentario"
+        />
+
+        <ion-button expand="full" (click)="guardarComentario()">Guardar</ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

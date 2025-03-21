@@ -167,21 +167,22 @@ export class ComputadoraPage implements OnInit {
     const confirmacion = window.confirm(`¿Estás seguro de que quieres eliminar la computadora "${computadora.nombre}"? Esta acción no se puede deshacer.`);
 
     if (confirmacion) {
-
       try {
         await this.firestoreService.deleteComputadora(computadora);
-        this.computadora = this.computadora.filter((c: { id: string; }) => c.id !== computadora.id);
+        this.computadoras = this.computadoras.filter((c) => c.id !== computadora.id);
         console.log(`Computadora eliminada: ${computadora.id}`);
         this.cargarComputadoras();
         window.alert('Computadora eliminada con éxito.');
       } catch (error) {
         console.error('Error eliminando la Computadora:', error);
-        window.alert('Error al eliminar la Computadora. Por favor, inténtalo de nuevo.');
+        window.alert('Error al eliminar la Computadora. Por favor, inténtalo de nuevo. Detalles: ' + error);
       } finally {
         this.changeDetectorRef.detectChanges();
       }
     }
   }
+
+
 
   openModal(computadora?: Computadoras) {
     this.isModalOpen = true;

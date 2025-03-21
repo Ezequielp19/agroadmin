@@ -1,7 +1,7 @@
 import { CommonModule, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonItem, IonLabel, IonRow, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonItem, IonLabel, IonModal, IonRow, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { FirestoreService } from 'src/app/common/services/firestore.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { FirestoreService } from 'src/app/common/services/firestore.service';
   styleUrls: ['./consultas-manuales.component.scss'],
   standalone:true,
   imports:[IonHeader,IonToolbar,IonButtons,IonBackButton,IonTitle, IonContent,IonGrid, CommonModule,FormsModule,
-    IonRow,IonCol, IonItem,IonLabel, IonButton, ReactiveFormsModule
+    IonRow,IonCol, IonItem,IonLabel, IonButton, ReactiveFormsModule, IonModal
   ]
 })
 export class ConsultasManualesComponent implements OnInit {
@@ -28,7 +28,9 @@ export class ConsultasManualesComponent implements OnInit {
   filtroDni: string='';
   filtroFecha: string = ''; // Fecha específica en formato dd/mm/yyyy
   filtroMes: string = '';   // Mes y año en formato mm/yyyy
-
+  modalOpen = false;
+  comentario: string = '';
+  consultaSeleccionada: any | null = null;
   constructor(private firestoreService: FirestoreService) {}
 
   async ngOnInit() {
@@ -58,7 +60,8 @@ export class ConsultasManualesComponent implements OnInit {
     try {
         const nuevaConsultaConFecha = {
             ...this.nuevaConsulta,
-            fechaCreacion: new Date().toISOString() // Fecha en formato ISO
+            fechaCreacion: new Date().toISOString(), // Fecha en formato ISO
+            comentario: '', // Campo para el comentario
         };
         await this.firestoreService.addConsultaManual(nuevaConsultaConFecha);
         this.consultasManual.push({
@@ -134,5 +137,28 @@ formatFecha(fecha: string | Date): string {
   return formatDate(fecha, 'dd/MM/yyyy', 'en-US');
 }
 
+ abrirModalComentario(consulta: any) {
+    this.consultaSeleccionada = consulta;
+    this.comentario = consulta.comentario || ''; // Cargar el comentario existente
+    this.modalOpen = true;
+  }
+
+  cerrarModal() {
+    this.modalOpen = false;
+    this.consultaSeleccionada = null;
+  }
+  async guardarComentario() {
+    if (!this.consultaSeleccionada) return;
+
+    try {
+      await this.firestoreService.updateConsultaManual(this.consultaSeleccionada.id, { comentario: this.comentario });
+      this.consultaSeleccionada.comentario = this.comentario; // Actualizar localmente
+      this.modalOpen = false;
+      window.alert('Comentario actualizado con éxito.');
+    } catch (error) {
+      console.error('Error guardando comentario:', error);
+      window.alert('Error al actualizar el comentario.');
+    }
+  }
 
 }
