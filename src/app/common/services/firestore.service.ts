@@ -107,7 +107,7 @@ async updatePrecios(nuevosPrecios: { consultas: number; suscripciones: number; c
   }
   }
 
- async uploadToR2(file: File, path: string): Promise<string> {
+  async uploadToR2(file: File, path: string): Promise<string> {
     try {
         const params = {
             Bucket: this.BUCKET_NAME,
@@ -116,16 +116,24 @@ async updatePrecios(nuevosPrecios: { consultas: number; suscripciones: number; c
             ACL: 'public-read',
         };
 
-        await this.s3.upload(params).promise();
+        // Configuración de multipart uploads
+        const options = {
+            partSize: 150 * 1024 * 1024, // Tamaño de cada parte: 10 MB
+            queueSize: 5, // Número máximo de partes subidas en paralelo
+        };
+
+        // Subida del archivo
+        const result = await this.s3.upload(params, options).promise();
         console.log('Archivo subido a R2:', path);
 
-        // Generar la URL pública en r2.dev
+        // Generar la URL pública en R2
         return `https://pub-6e5cd7fb9264406c98bf5ce99d4d8879.r2.dev/${path}`;
     } catch (error) {
         console.error('Error subiendo a R2:', error);
         throw error;
     }
 }
+
 
 
 // 🔹 Método para eliminar archivos de Cloudflare R2
