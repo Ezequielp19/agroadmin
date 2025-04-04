@@ -11,6 +11,34 @@
   <ion-button (click)="mostrarFormulario = !mostrarFormulario" expand="full" color="secondary">
     {{ mostrarFormulario ? 'Ocultar' : 'Crear Usuario Gratuito' }}
   </ion-button>
+
+  <ion-grid *ngIf="mostrarFormulario">
+    <ion-row>
+      <ion-col size="4">
+        <ion-item>
+          <ion-label position="stacked">Nombre</ion-label>
+          <input type="text" [(ngModel)]="nuevoUsuario.nombre" class="input-custom">
+        </ion-item>
+      </ion-col>
+      <ion-col size="4">
+        <ion-item>
+          <ion-label position="stacked">DNI</ion-label>
+          <input type="number" [(ngModel)]="nuevoUsuario.dni" class="input-custom">
+        </ion-item>
+      </ion-col>
+      <ion-col size="4">
+        <ion-item>
+          <ion-label position="stacked">Teléfono</ion-label>
+          <input type="number" [(ngModel)]="nuevoUsuario.telefono" class="input-custom">
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="full" color="success" (click)="crearUsuarioGratuito()">Guardar Usuario</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 <!-- Filtros -->
 <ion-grid fixed>
   <ion-row>
@@ -127,30 +155,3 @@
 
 
 
-<ion-grid *ngIf="mostrarFormulario">
-  <ion-row>
-    <ion-col size="4">
-      <ion-item>
-        <ion-label position="stacked">Nombre</ion-label>
-        <input type="text" [(ngModel)]="nuevoUsuario.nombre" class="input-custom">
-      </ion-item>
-    </ion-col>
-    <ion-col size="4">
-      <ion-item>
-        <ion-label position="stacked">DNI</ion-label>
-        <input type="number" [(ngModel)]="nuevoUsuario.dni" class="input-custom">
-      </ion-item>
-    </ion-col>
-    <ion-col size="4">
-      <ion-item>
-        <ion-label position="stacked">Teléfono</ion-label>
-        <input type="number" [(ngModel)]="nuevoUsuario.telefono" class="input-custom">
-      </ion-item>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col>
-      <ion-button expand="full" color="success" (click)="crearUsuarioGratuito()">Guardar Usuario</ion-button>
-    </ion-col>
-  </ion-row>
-</ion-grid>
