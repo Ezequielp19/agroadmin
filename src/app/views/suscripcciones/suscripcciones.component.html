@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Suscripciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Filtros -->
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="3">
+        <label>Filtrar por Email</label>
+        <input
+          [(ngModel)]="filtroEmail"
+          placeholder="Ingrese email"
+          (input)="applyFilters()"
+          class="custom-input"
+        />
+      </ion-col>
+      <ion-col size="3">
+        <label>Filtrar por DNI</label>
+        <input
+          [(ngModel)]="filtroDni"
+          placeholder="Ingrese DNI"
+          (input)="applyFilters()"
+          class="custom-input"
+        />
+      </ion-col>
+      <ion-col size="3">
+        <label>Filtrar por Fecha (dd/mm/yyyy)</label>
+        <input
+          [(ngModel)]="filtroFecha"
+          placeholder="Ingrese fecha"
+          (input)="applyFilters()"
+          class="custom-input"
+        />
+      </ion-col>
+      <ion-col size="3">
+        <label>Filtrar por Estado</label>
+        <select [(ngModel)]="filtroEstado" (change)="applyFilters()" class="custom-input">
+          <option value="">Todos</option>
+          <option value="approved">Abonado</option>
+          <option value="pending">Pago pendiente</option>
+        </select>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Tabla de Suscripciones -->
+  <ion-grid fixed>
+    <ion-row class="header-row">
+      <ion-col size="2"><strong>DNI</strong></ion-col>
+      <ion-col size="3"><strong>Email</strong></ion-col>
+      <ion-col size="2"><strong>Teléfono</strong></ion-col>
+      <ion-col size="2"><strong>Fecha</strong></ion-col>
+      <ion-col size="1"><strong>Estado</strong></ion-col>
+      <ion-col size="2"><strong>Acciones</strong></ion-col>
+    </ion-row>
+
+    <ng-container *ngFor="let sub of paginatedSubscriptions">
+      <ion-row>
+        <ion-col size="2">{{ sub.dni }}</ion-col>
+        <ion-col size="3">{{ sub.email }}</ion-col>
+        <ion-col size="2">{{ sub.telefono }}</ion-col>
+        <ion-col size="2">{{ sub.createdAt | date: 'dd/MM/yyyy' }}</ion-col>
+        <ion-col size="1">
+          <span [ngClass]="{'abonado': sub.status === 'approved', 'pendiente': sub.status === 'pending'}">
+            {{ sub.status === 'approved' ? 'Abonado' : 'Pago pendiente' }}
+          </span>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button color="danger" fill="outline" (click)="deleteSubscription(sub)">
+            Eliminar
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+  </ion-grid>
+
+  <!-- Paginación -->
+  <ion-grid fixed>
+    <ion-row class="pagination-row">
+      <ion-button [disabled]="currentPage === 1" (click)="prevPage()">Anterior</ion-button>
+      <span>Página {{ currentPage }} de {{ totalPages }}</span>
+      <ion-button [disabled]="currentPage === totalPages" (click)="nextPage()">Siguiente</ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

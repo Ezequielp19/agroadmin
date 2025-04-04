@@ -34,6 +34,7 @@ import { Computadoras } from '../models/computadora.model';
 import { ConsultaI } from '../models/consultas.model';
 import { environment } from 'src/environments/environment';
 import { S3 } from 'aws-sdk';
+import { SubscriptionI } from '../models/suscription.model';
 
 
 
@@ -106,6 +107,23 @@ async updatePrecios(nuevosPrecios: { consultas: number; suscripciones: number; c
     throw error;
   }
   }
+
+  async createFreeUser(user: Partial<UserI>): Promise<void> {
+    try {
+      const userRef = collection(this.firestore, 'usuarios');
+      const newUser = {
+        ...user,
+        subscriptionId: "gratuito", // Usuario gratuito
+        active: true, // Se activan por defecto
+      };
+      const docRef = await addDoc(userRef, newUser);
+      console.log('Usuario gratuito creado:', docRef.id);
+    } catch (error) {
+      console.error('Error al crear usuario gratuito:', error);
+      throw error;
+    }
+  }
+
 
   async uploadToR2(file: File, path: string): Promise<string> {
     try {
@@ -383,6 +401,27 @@ async deleteIMGFromR2(filePath: string) {
       }
     } catch (error) {
       console.error('Error obteniendo la suscripción:', error);
+      throw error;
+    }
+  }
+
+   // Obtener todas las suscripciones
+   async getSubscriptions(): Promise<SubscriptionI[]> {
+    const subsSnapshot = await getDocs(collection(this.firestore, 'subscriptions'));
+    return subsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as SubscriptionI[];
+  }
+
+  // Eliminar una suscripción por ID
+  async deleteSubscription(id: string): Promise<void> {
+    try {
+      const subRef = doc(this.firestore, 'subscriptions', id);
+      await deleteDoc(subRef);
+      console.log(`Suscripción eliminada: ${id}`);
+    } catch (error) {
+      console.error('Error eliminando suscripción:', error);
       throw error;
     }
   }

@@ -13,11 +13,11 @@ import { IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonH
 @Component({
   standalone: true,
   imports: [
-CommonModule,
-    IonHeader, IonToolbar,IonButtons,IonButton, IonBackButton,IonTitle, IonContent,IonGrid,IonRow,IonCol,IonItem,
+    CommonModule, IonHeader, IonToolbar,IonButtons,IonButton,
+    IonBackButton,IonTitle,
+    IonContent,IonGrid,IonRow,IonCol,IonItem,
     IonLabel, IonModal, IonSelectOption, IonList,
-    FormsModule,
-    ReactiveFormsModule,
+    FormsModule, ReactiveFormsModule,
   ],
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
@@ -30,6 +30,14 @@ export class UsuariosPage implements OnInit {
   usuariosFiltrados: UserI[] = [];
   filtroDNI: string = '';
   filtroActivo: string = 'todos'; // 'todos', 'activos', 'inactivos'
+
+  nuevoUsuario: Partial<UserI> = {
+    nombre: '',
+    dni: 0,
+    telefono: 0,
+  };
+
+  mostrarFormulario = false; // Controla si el formulario es visible
 
   constructor(
     private firestoreService: FirestoreService,
@@ -67,6 +75,34 @@ export class UsuariosPage implements OnInit {
     window.alert('Error al eliminar el usuario. Por favor, inténtalo de nuevo.');
   }
 }
+
+async crearUsuarioGratuito() {
+  if (!this.nuevoUsuario.nombre || !this.nuevoUsuario.dni || !this.nuevoUsuario.telefono) {
+    window.alert('Todos los campos son obligatorios.');
+    return;
+  }
+
+  const usuarioAGuardar: Partial<UserI> = {
+    nombre: this.nuevoUsuario.nombre.trim(),
+    dni: Number(this.nuevoUsuario.dni), // Convertir a número
+    telefono: Number(this.nuevoUsuario.telefono), // Convertir a número
+  };
+
+  try {
+    await this.firestoreService.createFreeUser(usuarioAGuardar);
+    this.cargarUsuarios();
+
+    this.nuevoUsuario = { nombre: '', dni: null, telefono: null }; // Resetear valores
+    this.mostrarFormulario = false;
+
+    window.alert('Usuario gratuito creado exitosamente.');
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    window.alert('Hubo un problema al crear el usuario.');
+  }
+}
+
+
 
 async toggleActivo(usuario: UserI) {
   try {

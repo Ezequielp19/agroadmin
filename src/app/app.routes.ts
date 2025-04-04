@@ -29,4 +29,8 @@ export const routes: Routes = [
     path: 'computadora-detalle/:id',
     loadComponent: () => import('./views/comp-secciones/comp-secciones.component').then((m) => m.CompSeccionesComponent),
   },
+  {
+    path: 'suscripciones',
+    loadComponent: () => import('./views/suscripcciones/suscripcciones.component').then((m) => m.SuscripccionesComponent),
+  },
 ];
