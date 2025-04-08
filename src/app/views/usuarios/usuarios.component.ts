@@ -33,8 +33,9 @@ export class UsuariosPage implements OnInit {
 
   nuevoUsuario: Partial<UserI> = {
     nombre: '',
-    dni: 0,
+    dni: '',
     telefono: 0,
+    email: '',
   };
 
   mostrarFormulario = false; // Controla si el formulario es visible
@@ -84,8 +85,9 @@ async crearUsuarioGratuito() {
 
   const usuarioAGuardar: Partial<UserI> = {
     nombre: this.nuevoUsuario.nombre.trim(),
-    dni: Number(this.nuevoUsuario.dni), // Convertir a número
+    dni: this.nuevoUsuario.dni, // Convertir a número
     telefono: Number(this.nuevoUsuario.telefono), // Convertir a número
+    email: this.nuevoUsuario.email
   };
 
   try {
@@ -116,15 +118,19 @@ async toggleActivo(usuario: UserI) {
   }
 }
 
-async verDatosSubscripcion(subscriptionId: string) {
+async verDatosSubscripcion(subscriptionId: string, usuario: UserI) {
   try {
-    const subscripcion = await this.firestoreService.getSubscripcionPorId(subscriptionId);
-    if (subscripcion) {
-      this.subscripcionSeleccionada = subscripcion;
-      this.mostrarModal = true;
+    if (subscriptionId === 'gratuito') {
+      this.subscripcionSeleccionada = {
+        email: usuario.email,
+        status: 'Gratuito',
+        dni: usuario.dni,
+        nombre: usuario.nombre,
+      };
     } else {
-      window.alert('No se encontraron datos para esta suscripción.');
+      this.subscripcionSeleccionada = await this.firestoreService.getSubscripcionPorId(subscriptionId);
     }
+    this.mostrarModal = true;
   } catch (error) {
     console.error('Error obteniendo los datos de la suscripción:', error);
     window.alert('Error obteniendo los datos de la suscripción.');
@@ -154,6 +160,9 @@ getEstadoLegible(status: string): string {
     return 'Estado desconocido';
   }
 }
+
+
+
 
 formatFecha(fecha: string | Date): string {
   return formatDate(fecha, 'dd/MM/yyyy', 'en-US');

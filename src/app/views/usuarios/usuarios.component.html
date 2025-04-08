@@ -14,22 +14,28 @@
 
   <ion-grid *ngIf="mostrarFormulario">
     <ion-row>
-      <ion-col size="4">
+      <ion-col size="3">
         <ion-item>
           <ion-label position="stacked">Nombre</ion-label>
           <input type="text" [(ngModel)]="nuevoUsuario.nombre" class="input-custom">
         </ion-item>
       </ion-col>
-      <ion-col size="4">
+      <ion-col size="3">
         <ion-item>
           <ion-label position="stacked">DNI</ion-label>
-          <input type="number" [(ngModel)]="nuevoUsuario.dni" class="input-custom">
+          <input type="text" [(ngModel)]="nuevoUsuario.dni" class="input-custom">
         </ion-item>
       </ion-col>
-      <ion-col size="4">
+      <ion-col size="3">
         <ion-item>
           <ion-label position="stacked">Teléfono</ion-label>
           <input type="number" [(ngModel)]="nuevoUsuario.telefono" class="input-custom">
+        </ion-item>
+      </ion-col>
+      <ion-col size="3">
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <input type="email" [(ngModel)]="nuevoUsuario.email" class="input-custom">
         </ion-item>
       </ion-col>
     </ion-row>
@@ -91,13 +97,13 @@
         <ion-col size="3">{{ usuario?.nombre }}</ion-col>
         <ion-col size="3">
           <ion-button
-            size="small"
-            color="primary"
-            fill="outline"
-            (click)="verDatosSubscripcion(usuario?.subscriptionId)"
-          >
-            Ver Datos
-          </ion-button>
+          size="small"
+          color="primary"
+          fill="outline"
+          (click)="verDatosSubscripcion(usuario?.subscriptionId, usuario)"
+        >
+          Ver Datos
+        </ion-button>
         </ion-col>
         <ion-col size="2">{{ usuario?.active ? 'Sí' : 'No' }}</ion-col>
         <ion-col size="2">
@@ -138,19 +144,25 @@
           <ion-item>
             <ion-label>Nombre: {{ subscripcionSeleccionada.nombre }}</ion-label>
           </ion-item>
-          <ion-item>
-            <ion-label>Precio: ${{ subscripcionSeleccionada.price }}</ion-label>
+          <ion-item *ngIf="subscripcionSeleccionada.status === 'Gratuito'">
+            <ion-label>Status: Gratuito</ion-label>
           </ion-item>
-          <ion-item>
-            <ion-label>Estado: {{ getEstadoLegible(subscripcionSeleccionada.status) }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>Fecha de creación: {{ formatFecha(subscripcionSeleccionada.createdAt) }}</ion-label>
-          </ion-item>
+          <ng-container *ngIf="subscripcionSeleccionada.status !== 'Gratuito'">
+            <ion-item>
+              <ion-label>Precio: ${{ subscripcionSeleccionada.price }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Estado: {{ getEstadoLegible(subscripcionSeleccionada.status) }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Fecha de creación: {{ formatFecha(subscripcionSeleccionada.createdAt) }}</ion-label>
+            </ion-item>
+          </ng-container>
         </ion-list>
       </ion-content>
     </ng-container>
   </ion-modal>
+
 </ion-content>
 
 
